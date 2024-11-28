@@ -21,8 +21,8 @@
           hyprlandPackage = hyprland.packages.${system}.hyprland;
         in
         rec {
-          Hypr-DarkWindow = pkgs.gcc13Stdenv.mkDerivation {
-            pname = "Hypr-DarkWindow";
+          hyprchroma = pkgs.gcc13Stdenv.mkDerivation {
+            pname = "hyprchroma";
             version = "0.1";
             src = nix-filter.lib {
               root = ./.;
@@ -37,29 +37,29 @@
 
             installPhase = ''
               mkdir -p $out/lib
-              install ./out/hyprchroma.so $out/lib/libHypr-DarkWindow.so
+              install ./out/hyprchroma.so $out/lib/libhyprchroma.so
             '';
 
             meta = with pkgs.lib; {
-              homepage = "https://github.com/micha4w/Hypr-DarkWindow";
+              homepage = "https://github.com/skissue/hyprchroma";
               description = "Invert the colors of specific Windows";
               license = licenses.bsd3;
               platforms = platforms.linux;
             };
           };
 
-          default = Hypr-DarkWindow;
+          default = hyprchroma;
         });
 
       devShells = forHyprlandSystems (system: pkgs: {
         default = pkgs.mkShell {
-          name = "Hypr-DarkWindow";
+          name = "hyprchroma";
 
           nativeBuildInputs = with pkgs; [
             clang-tools_16
           ];
 
-          inputsFrom = [ self.packages.${system}.Hypr-DarkWindow ];
+          inputsFrom = [ self.packages.${system}.default ];
         };
       });
     };
