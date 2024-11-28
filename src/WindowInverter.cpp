@@ -9,17 +9,14 @@ void          WindowInverter::OnRenderWindowPre() {
     static auto* const* bkgColor = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
 
     if (shouldInvert) {
-        const CColor bkg  = CColor(**bkgColor);
-        GLfloat      bkgR = bkg.r * 255.0;
-        GLfloat      bkgG = bkg.g * 255.0;
-        GLfloat      bkgB = bkg.b * 255.0;
+        const CColor bkg = CColor(**bkgColor);
 
         glUseProgram(m_Shaders.RGBA.program);
-        glUniform3f(m_Shaders.BKGA, bkgR, bkgG, bkgB);
+        glUniform3f(m_Shaders.BKGA, bkg.r, bkg.g, bkg.b);
         glUseProgram(m_Shaders.RGBX.program);
-        glUniform3f(m_Shaders.BKGX, bkgR, bkgG, bkgB);
+        glUniform3f(m_Shaders.BKGX, bkg.r, bkg.g, bkg.b);
         glUseProgram(m_Shaders.EXT.program);
-        glUniform3f(m_Shaders.BKGE, bkgR, bkgG, bkgB);
+        glUniform3f(m_Shaders.BKGE, bkg.r, bkg.g, bkg.b);
         std::swap(m_Shaders.EXT, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
         std::swap(m_Shaders.RGBA, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
         std::swap(m_Shaders.RGBX, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBX);

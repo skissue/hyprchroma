@@ -17,16 +17,13 @@ inline static constexpr auto DARK_MODE_FUNC = [](const std::string colorVarName)
 	float target_opacity = 0.83;
 	// Change any of the above values to get the result you want
 
-	// Set values to a 0 - 1 range
-	vec3 chroma = vec3(bkg[0]/255.0, bkg[1]/255.0, bkg[2]/255.0);
-
-	if ({0}.x >=chroma.x - similarity && {0}.x <=chroma.x + similarity &&
-            {0}.y >=chroma.y - similarity && {0}.y <=chroma.y + similarity &&
-            {0}.z >=chroma.z - similarity && {0}.z <=chroma.z + similarity &&
+	if ({0}.x >=bkg.x - similarity && {0}.x <=bkg.x + similarity &&
+            {0}.y >=bkg.y - similarity && {0}.y <=bkg.y + similarity &&
+            {0}.z >=bkg.z - similarity && {0}.z <=bkg.z + similarity &&
             {0}.w >= 0.99)
 	{{
 	    // Calculate error between matched pixel and color_rgb values
-            vec3 error = vec3(abs(chroma.x - {0}.x), abs(chroma.y - {0}.y), abs(chroma.z - {0}.z));
+            vec3 error = vec3(abs(bkg.x - {0}.x), abs(bkg.y - {0}.y), abs(bkg.z - {0}.z));
 	    float avg_error = (error.x + error.y + error.z) / 3.0;
             {0}.w = target_opacity + (1.0 - target_opacity)*avg_error*amount/similarity;
 
