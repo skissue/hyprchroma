@@ -79,49 +79,6 @@ void main() {
     gl_FragColor = pixColor * alpha;
 })glsl";
 
-inline const std::string TEXFRAGSRCRGBX_DARK = R"glsl(
-precision mediump float;
-varying vec2 v_texcoord;
-uniform sampler2D tex;
-uniform float alpha;
-
-uniform vec2 topLeft;
-uniform vec2 fullSize;
-uniform float radius;
-
-uniform int discardOpaque;
-uniform int discardAlpha;
-uniform int discardAlphaValue;
-
-uniform int applyTint;
-uniform vec3 tint;
-
-uniform vec3 bkg;
-
-void main() {
-
-    if (discardOpaque == 1 && alpha == 1.0)
-	discard;
-
-    vec4 pixColor = vec4(texture2D(tex, v_texcoord).rgb, 1.0);
-
-    if (applyTint == 2) {
-	pixColor[0] = pixColor[0] * tint[0];
-	pixColor[1] = pixColor[1] * tint[1];
-	pixColor[2] = pixColor[2] * tint[2];
-    }
-
-	)glsl" +
-    DARK_MODE_FUNC("pixColor") + R"glsl(
-
-    if (radius > 0.0) {
-    )glsl" +
-    ROUNDED_SHADER_FUNC("pixColor") + R"glsl(
-    }
-
-    gl_FragColor = pixColor * alpha;
-})glsl";
-
 inline const std::string TEXFRAGSRCEXT_DARK = R"glsl(
 #extension GL_OES_EGL_image_external : require
 

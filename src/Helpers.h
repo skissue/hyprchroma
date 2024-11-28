@@ -20,12 +20,10 @@ namespace std {
 
 struct ShaderHolder {
     CShader RGBA;
-    CShader RGBX;
     CShader EXT;
 
     // Holds the background color
     GLint BKGA;
-    GLint BKGX;
     GLint BKGE;
 
     void  Init();

@@ -26,23 +26,6 @@ void ShaderHolder::Init() {
     RGBA.tint              = glGetUniformLocation(prog, "tint");
     BKGA                   = glGetUniformLocation(prog, "bkg");
 
-    prog                   = CreateProgram(TEXVERTSRC, TEXFRAGSRCRGBX_DARK);
-    RGBX.program           = prog;
-    RGBX.tex               = glGetUniformLocation(prog, "tex");
-    RGBX.proj              = glGetUniformLocation(prog, "proj");
-    RGBX.alpha             = glGetUniformLocation(prog, "alpha");
-    RGBX.texAttrib         = glGetAttribLocation(prog, "texcoord");
-    RGBX.posAttrib         = glGetAttribLocation(prog, "pos");
-    RGBX.discardOpaque     = glGetUniformLocation(prog, "discardOpaque");
-    RGBX.discardAlpha      = glGetUniformLocation(prog, "discardAlpha");
-    RGBX.discardAlphaValue = glGetUniformLocation(prog, "discardAlphaValue");
-    RGBX.topLeft           = glGetUniformLocation(prog, "topLeft");
-    RGBX.fullSize          = glGetUniformLocation(prog, "fullSize");
-    RGBX.radius            = glGetUniformLocation(prog, "radius");
-    RGBX.applyTint         = glGetUniformLocation(prog, "applyTint");
-    RGBX.tint              = glGetUniformLocation(prog, "tint");
-    BKGX                   = glGetUniformLocation(prog, "bkg");
-
     prog                  = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_DARK);
     EXT.program           = prog;
     EXT.tex               = glGetUniformLocation(prog, "tex");
@@ -67,7 +50,6 @@ void ShaderHolder::Destroy() {
     g_pHyprRenderer->makeEGLCurrent();
 
     RGBA.destroy();
-    RGBX.destroy();
     EXT.destroy();
 
     g_pHyprRenderer->unsetEGL();
