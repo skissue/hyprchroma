@@ -5,10 +5,8 @@
 
 #include "Helpers.h"
 
-
-class WindowInverter
-{
-public:
+class WindowInverter {
+  public:
     void Init();
     void Unload();
 
@@ -24,17 +22,17 @@ public:
     void OnRenderWindowPost();
     void OnWindowClose(PHLWINDOW window);
 
-private:
+  private:
     std::vector<SWindowRule> m_InvertWindowRules;
-    std::vector<PHLWINDOW> m_InvertedWindows;
-    std::vector<PHLWINDOW> m_ManuallyInvertedWindows;
+    std::vector<PHLWINDOW>   m_InvertedWindows;
+    std::vector<PHLWINDOW>   m_ManuallyInvertedWindows;
 
-    ShaderHolder m_Shaders;
-    bool m_ShadersSwapped = false;
+    ShaderHolder             m_Shaders;
+    bool                     m_ShadersSwapped = false;
 
-    GLfloat bkgR = 0.0f;
-    GLfloat bkgG = 0.0f;
-    GLfloat bkgB = 0.0f;
+    GLfloat                  bkgR = 0.0f;
+    GLfloat                  bkgG = 0.0f;
+    GLfloat                  bkgB = 0.0f;
 
     // TODO remove deprecated
     bool MatchesDeprecatedRule(PHLWINDOW window);

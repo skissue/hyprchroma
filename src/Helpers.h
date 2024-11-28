@@ -7,11 +7,8 @@
 
 #include "TexturesDark.h"
 
-
-namespace std
-{
-    inline void swap(CShader& a, CShader& b)
-    {
+namespace std {
+    inline void swap(CShader& a, CShader& b) {
         // memcpy because speed!
         // (Would break unordered map, but those aren't in use anyway..)
         uint8_t c[sizeof(CShader)];
@@ -24,8 +21,7 @@ namespace std
 // TODO remove deprecated
 SWindowRule ParseRule(const std::string& value);
 
-struct ShaderHolder
-{
+struct ShaderHolder {
     CShader RGBA;
     CShader RGBX;
     CShader EXT;
@@ -35,10 +31,10 @@ struct ShaderHolder
     GLint BKGX;
     GLint BKGE;
 
-    void Init();
-    void Destroy();
+    void  Init();
+    void  Destroy();
 
-private:
+  private:
     GLuint CompileShader(const GLuint& type, std::string src);
     GLuint CreateProgram(const std::string& vert, const std::string& frag);
 };

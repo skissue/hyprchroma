@@ -5,7 +5,6 @@
 
 #include <hyprland/src/render/shaders/Textures.hpp>
 
-
 inline static constexpr auto DARK_MODE_FUNC = [](const std::string colorVarName) -> std::string {
     return std::format(R"glsl(
 	// Original shader by ikz87
@@ -33,9 +32,9 @@ inline static constexpr auto DARK_MODE_FUNC = [](const std::string colorVarName)
 
 	    // {0}.rgba = vec4(0, 0, 1, 0.5);
 	}}
-    )glsl", colorVarName);
+    )glsl",
+                       colorVarName);
 };
-
 
 inline const std::string TEXFRAGSRCRGBA_DARK = R"glsl(
 precision mediump float;
@@ -72,7 +71,8 @@ void main() {
 	    pixColor[2] = pixColor[2] * tint[2];
     }
 
-	)glsl" + DARK_MODE_FUNC("pixColor") +  R"glsl(
+	)glsl" +
+    DARK_MODE_FUNC("pixColor") + R"glsl(
 
     if (radius > 0.0) {
     )glsl" +
@@ -114,7 +114,8 @@ void main() {
 	pixColor[2] = pixColor[2] * tint[2];
     }
 
-	)glsl" + DARK_MODE_FUNC("pixColor") +  R"glsl(
+	)glsl" +
+    DARK_MODE_FUNC("pixColor") + R"glsl(
 
     if (radius > 0.0) {
     )glsl" +
@@ -158,7 +159,8 @@ void main() {
 	pixColor[2] = pixColor[2] * tint[2];
     }
 
-	)glsl" + DARK_MODE_FUNC("pixColor") +  R"glsl(
+	)glsl" +
+    DARK_MODE_FUNC("pixColor") + R"glsl(
 
     if (radius > 0.0) {
     )glsl" +
