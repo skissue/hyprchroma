@@ -1,10 +1,14 @@
 #include "WindowInverter.h"
 #include <hyprutils/string/String.hpp>
+#include <tuple>
 
-void WindowInverter::SetBackground(GLfloat r, GLfloat g, GLfloat b) {
-    bkgR = r;
-    bkgG = g;
-    bkgB = b;
+extern HANDLE                         PHANDLE;
+
+std::tuple<GLfloat, GLfloat, GLfloat> WindowInverter::GetBackground() {
+    static auto* const* bkgColor = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
+    const CColor        color    = CColor(**bkgColor);
+
+    return {color.r, color.g, color.b};
 }
 
 void WindowInverter::OnRenderWindowPre() {
@@ -12,6 +16,11 @@ void WindowInverter::OnRenderWindowPre() {
         (std::find(m_ManuallyInvertedWindows.begin(), m_ManuallyInvertedWindows.end(), g_pHyprOpenGL->m_pCurrentWindow.lock()) != m_ManuallyInvertedWindows.end());
 
     if (shouldInvert) {
+        auto bkg  = GetBackground();
+        auto bkgR = std::get<0>(bkg);
+        auto bkgG = std::get<1>(bkg);
+        auto bkgB = std::get<2>(bkg);
+
         glUseProgram(m_Shaders.RGBA.program);
         glUniform3f(m_Shaders.BKGA, bkgR, bkgG, bkgB);
         glUseProgram(m_Shaders.RGBX.program);

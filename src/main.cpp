@@ -1,6 +1,7 @@
 #include "WindowInverter.h"
 
 #include <hyprland/src/SharedDefs.hpp>
+#include <hyprland/src/plugins/PluginAPI.hpp>
 #include <hyprlang.hpp>
 
 inline HANDLE                            PHANDLE = nullptr;
@@ -36,25 +37,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
     addDeprecatedEventListeners();
 
-    HyprlandAPI::addConfigKeyword(handle, "chromakey_background",
-                                  [](const char* cmd, const char* val) -> Hyprlang::CParseResult {
-                                      // Parse val as "r,g,b" into 3 GLfloats
-                                      std::vector<std::string> result;
-                                      std::stringstream        ss(val);
-                                      std::string              component;
-
-                                      getline(ss, component, ',');
-                                      GLfloat r = std::stof(component);
-                                      getline(ss, component, ',');
-                                      GLfloat g = std::stof(component);
-                                      getline(ss, component, ',');
-                                      GLfloat b = std::stof(component);
-
-                                      g_WindowInverter.SetBackground(r, g, b);
-
-                                      return Hyprlang::CParseResult(); // return a default CParseResult
-                                  },
-                                  {.allowFlags = false});
+    HyprlandAPI::addConfigValue(PHANDLE, "plugin:chroma:color", Hyprlang::INT(0x000000));
 
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "render", [&](void* self, SCallbackInfo&, std::any data) {
         std::lock_guard<std::mutex> lock(g_InverterMutex);

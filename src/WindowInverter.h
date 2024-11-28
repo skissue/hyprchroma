@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <vector>
 #include <hyprland/src/Compositor.hpp>
 
@@ -7,13 +8,13 @@
 
 class WindowInverter {
   public:
-    void Init();
-    void Unload();
+    void                                  Init();
+    void                                  Unload();
 
-    void SetBackground(GLfloat r, GLfloat g, GLfloat b);
+    std::tuple<GLfloat, GLfloat, GLfloat> GetBackground();
 
-    void InvertIfMatches(PHLWINDOW window);
-    void ToggleInvert(PHLWINDOW window);
+    void                                  InvertIfMatches(PHLWINDOW window);
+    void                                  ToggleInvert(PHLWINDOW window);
     // TODO remove deprecated
     void SetRules(std::vector<SWindowRule>&& rules);
     void Reload();
@@ -29,10 +30,6 @@ class WindowInverter {
 
     ShaderHolder             m_Shaders;
     bool                     m_ShadersSwapped = false;
-
-    GLfloat                  bkgR = 0.0f;
-    GLfloat                  bkgG = 0.0f;
-    GLfloat                  bkgB = 0.0f;
 
     // TODO remove deprecated
     bool MatchesDeprecatedRule(PHLWINDOW window);
