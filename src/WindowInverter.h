@@ -11,7 +11,6 @@ class WindowInverter {
     void                                  Init();
     void                                  Unload();
 
-    std::tuple<GLfloat, GLfloat, GLfloat> GetBackground();
 
     void                                  InvertIfMatches(PHLWINDOW window);
     void                                  ToggleInvert(PHLWINDOW window);
