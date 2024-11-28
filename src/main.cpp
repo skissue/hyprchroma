@@ -11,11 +11,7 @@ inline std::mutex                        g_InverterMutex;
 
 inline std::vector<SP<HOOK_CALLBACK_FN>> g_Callbacks;
 
-// TODO remove deprecated
-inline std::vector<SWindowRule>        g_WindowRulesBuildup;
-static void                            addDeprecatedEventListeners();
-
-APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
+APICALL EXPORT PLUGIN_DESCRIPTION_INFO   PLUGIN_INIT(HANDLE handle) {
     PHANDLE = handle;
 
     const std::string HASH = __hyprland_api_get_hash();
@@ -35,8 +31,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
     g_Callbacks = {};
 
-    addDeprecatedEventListeners();
-
     HyprlandAPI::addConfigValue(PHANDLE, "plugin:chroma:color", Hyprlang::INT(0x000000));
 
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "render", [&](void* self, SCallbackInfo&, std::any data) {
@@ -51,12 +45,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "configReloaded", [&](void* self, SCallbackInfo&, std::any data) {
         std::lock_guard<std::mutex> lock(g_InverterMutex);
 
-        // TODO remove deprecated
-        g_WindowInverter.SetRules(std::move(g_WindowRulesBuildup));
-        g_WindowRulesBuildup = {};
-
-        // TODO add when removing top
-        // g_WindowInverter.Reload();
+        g_WindowInverter.Reload();
     }));
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "closeWindow", [&](void* self, SCallbackInfo&, std::any data) {
         std::lock_guard<std::mutex> lock(g_InverterMutex);
@@ -78,20 +67,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
     });
 
     return {"hyprchroma", "Applies ChromaKey algorithm to windows for transparency effect", "alexhulbert", "1.0.0"};
-}
-
-// TODO remove deprecated
-Hyprlang::CParseResult onInvertKeyword(const char* COMMAND, const char* VALUE) {
-    Hyprlang::CParseResult res;
-    try {
-        g_WindowRulesBuildup.push_back(ParseRule(VALUE));
-    } catch (const std::exception& ex) { res.setError(ex.what()); }
-    return res;
-}
-
-// TODO remove deprecated
-static void addDeprecatedEventListeners() {
-    HyprlandAPI::addConfigKeyword(PHANDLE, "chromakey_enable", onInvertKeyword, {.allowFlags = false});
 }
 
 APICALL EXPORT void PLUGIN_EXIT() {

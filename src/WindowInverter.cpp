@@ -47,11 +47,6 @@ void WindowInverter::OnWindowClose(PHLWINDOW window) {
     }
 }
 
-void WindowInverter::SetRules(std::vector<SWindowRule>&& rules) {
-    m_InvertWindowRules = std::move(rules);
-    Reload();
-}
-
 void WindowInverter::Init() {
     m_Shaders.Init();
 }
@@ -75,10 +70,7 @@ void WindowInverter::InvertIfMatches(PHLWINDOW window) {
     std::vector<SWindowRule> rules        = g_pConfigManager->getMatchingRules(window);
     bool                     shouldInvert = std::any_of(rules.begin(), rules.end(), [](const SWindowRule& rule) { return rule.szRule == "plugin:chromakey"; });
 
-    // TODO remove deprecated
-    shouldInvert = shouldInvert || MatchesDeprecatedRule(window);
-
-    auto windowIt = std::find(m_InvertedWindows.begin(), m_InvertedWindows.end(), window);
+    auto                     windowIt = std::find(m_InvertedWindows.begin(), m_InvertedWindows.end(), window);
     if (shouldInvert != (windowIt != m_InvertedWindows.end())) {
         if (shouldInvert)
             m_InvertedWindows.push_back(window);
@@ -111,104 +103,4 @@ void WindowInverter::Reload() {
 
     for (const auto& window : g_pCompositor->m_vWindows)
         InvertIfMatches(window);
-}
-
-// TODO remove deprecated
-bool WindowInverter::MatchesDeprecatedRule(PHLWINDOW window) {
-    std::string title      = window->m_szTitle;
-    std::string appidclass = window->m_szClass;
-
-    for (const auto& rule : m_InvertWindowRules) {
-        try {
-            if (!rule.szTag.empty() && !window->m_tags.isTagged(rule.szTag))
-                continue;
-
-            if (rule.szClass != "") {
-                std::regex RULECHECK(rule.szClass);
-
-                if (!std::regex_search(appidclass, RULECHECK))
-                    continue;
-            }
-
-            if (rule.szTitle != "") {
-                std::regex RULECHECK(rule.szTitle);
-
-                if (!std::regex_search(title, RULECHECK))
-                    continue;
-            }
-
-            if (rule.szInitialTitle != "") {
-                std::regex RULECHECK(rule.szInitialTitle);
-
-                if (!std::regex_search(window->m_szInitialTitle, RULECHECK))
-                    continue;
-            }
-
-            if (rule.szInitialClass != "") {
-                std::regex RULECHECK(rule.szInitialClass);
-
-                if (!std::regex_search(window->m_szInitialClass, RULECHECK))
-                    continue;
-            }
-
-            if (rule.bX11 != -1) {
-                if (window->m_bIsX11 != rule.bX11)
-                    continue;
-            }
-
-            if (rule.bFloating != -1) {
-                if (window->m_bIsFloating != rule.bFloating)
-                    continue;
-            }
-
-            if (rule.bFullscreen != -1) {
-                if (window->isFullscreen() != rule.bFullscreen)
-                    continue;
-            }
-
-            if (rule.bPinned != -1) {
-                if (window->m_bPinned != rule.bPinned)
-                    continue;
-            }
-
-            if (rule.bFocus != -1) {
-                if (rule.bFocus != (g_pCompositor->m_pLastWindow.lock() == window))
-                    continue;
-            }
-
-            if (!rule.szOnWorkspace.empty()) {
-                const auto PWORKSPACE = window->m_pWorkspace;
-                if (!PWORKSPACE || !PWORKSPACE->matchesStaticSelector(rule.szOnWorkspace))
-                    continue;
-            }
-
-            if (!rule.szWorkspace.empty()) {
-                const auto PWORKSPACE = window->m_pWorkspace;
-
-                if (!PWORKSPACE)
-                    continue;
-
-                if (rule.szWorkspace.starts_with("name:")) {
-                    if (PWORKSPACE->m_szName != rule.szWorkspace.substr(5))
-                        continue;
-                } else {
-                    // number
-                    if (!Hyprutils::String::isNumber(rule.szWorkspace))
-                        throw std::runtime_error("szWorkspace not name: or number");
-
-                    const int64_t ID = std::stoll(rule.szWorkspace);
-
-                    if (PWORKSPACE->m_iID != ID)
-                        continue;
-                }
-            }
-        } catch (std::exception& e) {
-            Debug::log(ERR, "Regex error at {} ({})", rule.szValue, e.what());
-            continue;
-        }
-
-        return true;
-    }
-
-    return false;
 }

@@ -8,14 +8,11 @@
 
 class WindowInverter {
   public:
-    void                                  Init();
-    void                                  Unload();
+    void Init();
+    void Unload();
 
-
-    void                                  InvertIfMatches(PHLWINDOW window);
-    void                                  ToggleInvert(PHLWINDOW window);
-    // TODO remove deprecated
-    void SetRules(std::vector<SWindowRule>&& rules);
+    void InvertIfMatches(PHLWINDOW window);
+    void ToggleInvert(PHLWINDOW window);
     void Reload();
 
     void OnRenderWindowPre();
@@ -29,7 +26,4 @@ class WindowInverter {
 
     ShaderHolder             m_Shaders;
     bool                     m_ShadersSwapped = false;
-
-    // TODO remove deprecated
-    bool MatchesDeprecatedRule(PHLWINDOW window);
 };

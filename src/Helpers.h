@@ -18,9 +18,6 @@ namespace std {
     }
 }
 
-// TODO remove deprecated
-SWindowRule ParseRule(const std::string& value);
-
 struct ShaderHolder {
     CShader RGBA;
     CShader RGBX;
