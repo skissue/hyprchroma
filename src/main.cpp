@@ -26,7 +26,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO   PLUGIN_INIT(HANDLE handle) {
     {
         std::lock_guard<std::mutex> lock(g_InverterMutex);
         g_WindowInverter.Init();
-        g_pConfigManager->m_bForceReload = true;
     }
 
     g_Callbacks = {};
