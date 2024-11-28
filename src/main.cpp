@@ -17,6 +17,15 @@ static void                            addDeprecatedEventListeners();
 APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
     PHANDLE = handle;
 
+    const std::string HASH = __hyprland_api_get_hash();
+
+    // ALWAYS add this to your plugins. It will prevent random crashes coming from
+    // mismatched header versions.
+    if (HASH != GIT_COMMIT_HASH) {
+        HyprlandAPI::addNotification(PHANDLE, "[hyprchroma] Mismatched headers! Can't proceed.", CColor{1.0, 0.2, 0.2, 1.0}, 5000);
+        throw std::runtime_error("[hyprchroma] Version mismatch");
+    }
+
     {
         std::lock_guard<std::mutex> lock(g_InverterMutex);
         g_WindowInverter.Init();
