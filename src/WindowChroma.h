@@ -6,13 +6,13 @@
 
 #include "Helpers.h"
 
-class WindowInverter {
+class WindowChroma {
   public:
     void Init();
     void Unload();
 
-    void InvertIfMatches(PHLWINDOW window);
-    void ToggleInvert(PHLWINDOW window);
+    void ChromaIfMatches(PHLWINDOW window);
+    void ToggleChroma(PHLWINDOW window);
     void Reload();
 
     void OnRenderWindowPre();
@@ -20,9 +20,9 @@ class WindowInverter {
     void OnWindowClose(PHLWINDOW window);
 
   private:
-    std::vector<SWindowRule> m_InvertWindowRules;
-    std::vector<PHLWINDOW>   m_InvertedWindows;
-    std::vector<PHLWINDOW>   m_ManuallyInvertedWindows;
+    std::vector<SWindowRule> m_ChromaWindowRules;
+    std::vector<PHLWINDOW>   m_ChromaWindows;
+    std::vector<PHLWINDOW>   m_ManuallyChromaWindows;
 
     ShaderHolder             m_Shaders;
     bool                     m_ShadersSwapped = false;

@@ -1,4 +1,4 @@
-#include "WindowInverter.h"
+#include "WindowChroma.h"
 
 #include <hyprland/src/SharedDefs.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
@@ -6,8 +6,8 @@
 
 inline HANDLE                            PHANDLE = nullptr;
 
-inline WindowInverter                    g_WindowInverter;
-inline std::mutex                        g_InverterMutex;
+inline WindowChroma                      g_WindowChroma;
+inline std::mutex                        g_ChromaMutex;
 
 inline std::vector<SP<HOOK_CALLBACK_FN>> g_Callbacks;
 
@@ -29,50 +29,50 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
     HyprlandAPI::addConfigValue(PHANDLE, "plugin:chroma:color", Hyprlang::INT(0x000000));
     HyprlandAPI::addDispatcher(PHANDLE, "togglewindowchromakey", [&](std::string args) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
-        g_WindowInverter.ToggleInvert(g_pCompositor->getWindowByRegex(args));
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
+        g_WindowChroma.ToggleChroma(g_pCompositor->getWindowByRegex(args));
     });
     HyprlandAPI::addDispatcher(PHANDLE, "togglechromakey", [&](std::string args) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
-        g_WindowInverter.ToggleInvert(g_pCompositor->m_pLastWindow.lock());
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
+        g_WindowChroma.ToggleChroma(g_pCompositor->m_pLastWindow.lock());
     });
 
     {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
-        g_WindowInverter.Init();
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
+        g_WindowChroma.Init();
     }
 
     g_Callbacks = {};
 
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "render", [&](void* self, SCallbackInfo&, std::any data) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
         eRenderStage                renderStage = std::any_cast<eRenderStage>(data);
 
         if (renderStage == eRenderStage::RENDER_PRE_WINDOW)
-            g_WindowInverter.OnRenderWindowPre();
+            g_WindowChroma.OnRenderWindowPre();
         if (renderStage == eRenderStage::RENDER_POST_WINDOW)
-            g_WindowInverter.OnRenderWindowPost();
+            g_WindowChroma.OnRenderWindowPost();
     }));
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "configReloaded", [&](void* self, SCallbackInfo&, std::any data) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
 
-        g_WindowInverter.Reload();
+        g_WindowChroma.Reload();
     }));
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "closeWindow", [&](void* self, SCallbackInfo&, std::any data) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
-        g_WindowInverter.OnWindowClose(std::any_cast<PHLWINDOW>(data));
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
+        g_WindowChroma.OnWindowClose(std::any_cast<PHLWINDOW>(data));
     }));
 
     g_Callbacks.push_back(HyprlandAPI::registerCallbackDynamic(PHANDLE, "windowUpdateRules", [&](void* self, SCallbackInfo&, std::any data) {
-        std::lock_guard<std::mutex> lock(g_InverterMutex);
-        g_WindowInverter.InvertIfMatches(std::any_cast<PHLWINDOW>(data));
+        std::lock_guard<std::mutex> lock(g_ChromaMutex);
+        g_WindowChroma.ChromaIfMatches(std::any_cast<PHLWINDOW>(data));
     }));
 
     return {"hyprchroma", "Applies ChromaKey algorithm to windows for transparency effect", "alexhulbert", "1.0.0"};
 }
 
 APICALL EXPORT void PLUGIN_EXIT() {
-    std::lock_guard<std::mutex> lock(g_InverterMutex);
+    std::lock_guard<std::mutex> lock(g_ChromaMutex);
     g_Callbacks = {};
-    g_WindowInverter.Unload();
+    g_WindowChroma.Unload();
 }

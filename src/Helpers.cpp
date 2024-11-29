@@ -9,7 +9,7 @@
 void ShaderHolder::Init() {
     g_pHyprRenderer->makeEGLCurrent();
 
-    GLuint prog            = CreateProgram(TEXVERTSRC, TEXFRAGSRCRGBA_DARK);
+    GLuint prog            = CreateProgram(TEXVERTSRC, TEXFRAGSRCRGBA_CHROMA);
     RGBA.program           = prog;
     RGBA.proj              = glGetUniformLocation(prog, "proj");
     RGBA.tex               = glGetUniformLocation(prog, "tex");
@@ -26,7 +26,7 @@ void ShaderHolder::Init() {
     RGBA.tint              = glGetUniformLocation(prog, "tint");
     BKGA                   = glGetUniformLocation(prog, "bkg");
 
-    prog                  = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_DARK);
+    prog                  = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_CHROMA);
     EXT.program           = prog;
     EXT.tex               = glGetUniformLocation(prog, "tex");
     EXT.proj              = glGetUniformLocation(prog, "proj");

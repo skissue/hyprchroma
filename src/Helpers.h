@@ -5,7 +5,7 @@
 
 #include <hyprland/src/render/OpenGL.hpp>
 
-#include "TexturesDark.h"
+#include "TexturesChroma.h"
 
 namespace std {
     inline void swap(CShader& a, CShader& b) {

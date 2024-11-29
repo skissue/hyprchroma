@@ -5,7 +5,7 @@
 
 #include <hyprland/src/render/shaders/Textures.hpp>
 
-inline static constexpr auto DARK_MODE_FUNC = [](const std::string colorVarName) -> std::string {
+inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) -> std::string {
     return std::format(R"glsl(
 	// Original shader by ikz87
 
@@ -33,7 +33,7 @@ inline static constexpr auto DARK_MODE_FUNC = [](const std::string colorVarName)
                        colorVarName);
 };
 
-inline const std::string TEXFRAGSRCRGBA_DARK = R"glsl(
+inline const std::string TEXFRAGSRCRGBA_CHROMA = R"glsl(
 precision mediump float;
 varying vec2 v_texcoord; // is in 0-1
 uniform sampler2D tex;
@@ -69,7 +69,7 @@ void main() {
     }
 
 	)glsl" +
-    DARK_MODE_FUNC("pixColor") + R"glsl(
+    CHROMA_FUNC("pixColor") + R"glsl(
 
     if (radius > 0.0) {
     )glsl" +
@@ -79,7 +79,7 @@ void main() {
     gl_FragColor = pixColor * alpha;
 })glsl";
 
-inline const std::string TEXFRAGSRCEXT_DARK = R"glsl(
+inline const std::string TEXFRAGSRCEXT_CHROMA = R"glsl(
 #extension GL_OES_EGL_image_external : require
 
 precision mediump float;
@@ -114,7 +114,7 @@ void main() {
     }
 
 	)glsl" +
-    DARK_MODE_FUNC("pixColor") + R"glsl(
+    CHROMA_FUNC("pixColor") + R"glsl(
 
     if (radius > 0.0) {
     )glsl" +
