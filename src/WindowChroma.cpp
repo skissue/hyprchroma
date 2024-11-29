@@ -8,8 +8,16 @@ void          WindowChroma::Init() {
 }
 
 void WindowChroma::Reload() {
-    m_ChromaWindows = {};
+    // Reload shader settings
+    static auto* const* bkgColor = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
+    const CColor        bkg      = CColor(**bkgColor);
 
+    glUseProgram(m_Shaders.RGBA.program);
+    glUniform3f(m_Shaders.BKGA, bkg.r, bkg.g, bkg.b);
+    glUseProgram(m_Shaders.EXT.program);
+    glUniform3f(m_Shaders.BKGE, bkg.r, bkg.g, bkg.b);
+
+    m_ChromaWindows = {};
     for (const auto& window : g_pCompositor->m_vWindows)
         ChromaIfMatches(window);
 }
@@ -62,15 +70,8 @@ void WindowChroma::ToggleChroma(PHLWINDOW window) {
 void WindowChroma::OnRenderWindowPre() {
     bool shouldInvert = (std::find(m_ChromaWindows.begin(), m_ChromaWindows.end(), g_pHyprOpenGL->m_pCurrentWindow.lock()) != m_ChromaWindows.end()) ^
         (std::find(m_ManuallyChromaWindows.begin(), m_ManuallyChromaWindows.end(), g_pHyprOpenGL->m_pCurrentWindow.lock()) != m_ManuallyChromaWindows.end());
-    static auto* const* bkgColor = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
 
     if (shouldInvert) {
-        const CColor bkg = CColor(**bkgColor);
-
-        glUseProgram(m_Shaders.RGBA.program);
-        glUniform3f(m_Shaders.BKGA, bkg.r, bkg.g, bkg.b);
-        glUseProgram(m_Shaders.EXT.program);
-        glUniform3f(m_Shaders.BKGE, bkg.r, bkg.g, bkg.b);
         std::swap(m_Shaders.RGBA, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
         std::swap(m_Shaders.EXT, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
         m_ShadersSwapped = true;
