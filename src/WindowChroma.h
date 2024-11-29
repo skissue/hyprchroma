@@ -9,11 +9,11 @@
 class WindowChroma {
   public:
     void Init();
+    void Reload();
     void Unload();
 
     void ChromaIfMatches(PHLWINDOW window);
     void ToggleChroma(PHLWINDOW window);
-    void Reload();
 
     void OnRenderWindowPre();
     void OnRenderWindowPost();
