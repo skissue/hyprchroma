@@ -9,10 +9,6 @@ inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) ->
     return std::format(R"glsl(
 	// Original shader by ikz87
 
-	// Apply opacity changes to pixels similar to one color
-	// vec3 color_rgb = vec3(0,0,255); // Color to replace, in rgb format
-	float similarity = 0.1; // How many similar colors should be affected.
-
 	float amount = 1.4; // How much similar colors should be changed.
 	float target_opacity = 0.83;
 	// Change any of the above values to get the result you want
@@ -51,6 +47,7 @@ uniform int applyTint;
 uniform vec3 tint;
 
 uniform vec3 bkg;
+uniform float similarity;
 
 void main() {
 
@@ -99,6 +96,7 @@ uniform int applyTint;
 uniform vec3 tint;
 
 uniform vec3 bkg;
+uniform float similarity;
 
 void main() {
 

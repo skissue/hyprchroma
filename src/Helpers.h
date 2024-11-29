@@ -1,5 +1,6 @@
 #pragma once
 
+#include <hyprland/src/render/Shader.hpp>
 #include <string>
 #include <cstring>
 
@@ -18,16 +19,19 @@ namespace std {
     }
 }
 
+struct ChromaShader {
+    CShader cshader;
+    // Custom shader uniform field locations
+    GLint bkg;
+    GLint similarity;
+};
+
 struct ShaderHolder {
-    CShader RGBA;
-    CShader EXT;
+    ChromaShader RGBA;
+    ChromaShader EXT;
 
-    // Holds the background color
-    GLint BKGA;
-    GLint BKGE;
-
-    void  Init();
-    void  Destroy();
+    void         Init();
+    void         Destroy();
 
   private:
     GLuint CompileShader(const GLuint& type, std::string src);

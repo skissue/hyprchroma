@@ -9,39 +9,41 @@
 void ShaderHolder::Init() {
     g_pHyprRenderer->makeEGLCurrent();
 
-    GLuint prog            = CreateProgram(TEXVERTSRC, TEXFRAGSRCRGBA_CHROMA);
-    RGBA.program           = prog;
-    RGBA.proj              = glGetUniformLocation(prog, "proj");
-    RGBA.tex               = glGetUniformLocation(prog, "tex");
-    RGBA.alpha             = glGetUniformLocation(prog, "alpha");
-    RGBA.texAttrib         = glGetAttribLocation(prog, "texcoord");
-    RGBA.posAttrib         = glGetAttribLocation(prog, "pos");
-    RGBA.discardOpaque     = glGetUniformLocation(prog, "discardOpaque");
-    RGBA.discardAlpha      = glGetUniformLocation(prog, "discardAlpha");
-    RGBA.discardAlphaValue = glGetUniformLocation(prog, "discardAlphaValue");
-    RGBA.topLeft           = glGetUniformLocation(prog, "topLeft");
-    RGBA.fullSize          = glGetUniformLocation(prog, "fullSize");
-    RGBA.radius            = glGetUniformLocation(prog, "radius");
-    RGBA.applyTint         = glGetUniformLocation(prog, "applyTint");
-    RGBA.tint              = glGetUniformLocation(prog, "tint");
-    BKGA                   = glGetUniformLocation(prog, "bkg");
+    GLuint prog                    = CreateProgram(TEXVERTSRC, TEXFRAGSRCRGBA_CHROMA);
+    RGBA.cshader.program           = prog;
+    RGBA.cshader.proj              = glGetUniformLocation(prog, "proj");
+    RGBA.cshader.tex               = glGetUniformLocation(prog, "tex");
+    RGBA.cshader.alpha             = glGetUniformLocation(prog, "alpha");
+    RGBA.cshader.texAttrib         = glGetAttribLocation(prog, "texcoord");
+    RGBA.cshader.posAttrib         = glGetAttribLocation(prog, "pos");
+    RGBA.cshader.discardOpaque     = glGetUniformLocation(prog, "discardOpaque");
+    RGBA.cshader.discardAlpha      = glGetUniformLocation(prog, "discardAlpha");
+    RGBA.cshader.discardAlphaValue = glGetUniformLocation(prog, "discardAlphaValue");
+    RGBA.cshader.topLeft           = glGetUniformLocation(prog, "topLeft");
+    RGBA.cshader.fullSize          = glGetUniformLocation(prog, "fullSize");
+    RGBA.cshader.radius            = glGetUniformLocation(prog, "radius");
+    RGBA.cshader.applyTint         = glGetUniformLocation(prog, "applyTint");
+    RGBA.cshader.tint              = glGetUniformLocation(prog, "tint");
+    RGBA.bkg                       = glGetUniformLocation(prog, "bkg");
+    RGBA.similarity                = glGetUniformLocation(prog, "similarity");
 
-    prog                  = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_CHROMA);
-    EXT.program           = prog;
-    EXT.tex               = glGetUniformLocation(prog, "tex");
-    EXT.proj              = glGetUniformLocation(prog, "proj");
-    EXT.alpha             = glGetUniformLocation(prog, "alpha");
-    EXT.posAttrib         = glGetAttribLocation(prog, "pos");
-    EXT.texAttrib         = glGetAttribLocation(prog, "texcoord");
-    EXT.discardOpaque     = glGetUniformLocation(prog, "discardOpaque");
-    EXT.discardAlpha      = glGetUniformLocation(prog, "discardAlpha");
-    EXT.discardAlphaValue = glGetUniformLocation(prog, "discardAlphaValue");
-    EXT.topLeft           = glGetUniformLocation(prog, "topLeft");
-    EXT.fullSize          = glGetUniformLocation(prog, "fullSize");
-    EXT.radius            = glGetUniformLocation(prog, "radius");
-    EXT.applyTint         = glGetUniformLocation(prog, "applyTint");
-    EXT.tint              = glGetUniformLocation(prog, "tint");
-    BKGE                  = glGetUniformLocation(prog, "bkg");
+    prog                          = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_CHROMA);
+    EXT.cshader.program           = prog;
+    EXT.cshader.tex               = glGetUniformLocation(prog, "tex");
+    EXT.cshader.proj              = glGetUniformLocation(prog, "proj");
+    EXT.cshader.alpha             = glGetUniformLocation(prog, "alpha");
+    EXT.cshader.posAttrib         = glGetAttribLocation(prog, "pos");
+    EXT.cshader.texAttrib         = glGetAttribLocation(prog, "texcoord");
+    EXT.cshader.discardOpaque     = glGetUniformLocation(prog, "discardOpaque");
+    EXT.cshader.discardAlpha      = glGetUniformLocation(prog, "discardAlpha");
+    EXT.cshader.discardAlphaValue = glGetUniformLocation(prog, "discardAlphaValue");
+    EXT.cshader.topLeft           = glGetUniformLocation(prog, "topLeft");
+    EXT.cshader.fullSize          = glGetUniformLocation(prog, "fullSize");
+    EXT.cshader.radius            = glGetUniformLocation(prog, "radius");
+    EXT.cshader.applyTint         = glGetUniformLocation(prog, "applyTint");
+    EXT.cshader.tint              = glGetUniformLocation(prog, "tint");
+    EXT.bkg                       = glGetUniformLocation(prog, "bkg");
+    EXT.similarity                = glGetUniformLocation(prog, "similarity");
 
     g_pHyprRenderer->unsetEGL();
 }
@@ -49,8 +51,8 @@ void ShaderHolder::Init() {
 void ShaderHolder::Destroy() {
     g_pHyprRenderer->makeEGLCurrent();
 
-    RGBA.destroy();
-    EXT.destroy();
+    RGBA.cshader.destroy();
+    EXT.cshader.destroy();
 
     g_pHyprRenderer->unsetEGL();
 }

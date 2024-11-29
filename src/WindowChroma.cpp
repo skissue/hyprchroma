@@ -1,4 +1,5 @@
 #include "WindowChroma.h"
+#include <hyprlang.hpp>
 #include <hyprutils/string/String.hpp>
 
 extern HANDLE PHANDLE;
@@ -9,13 +10,16 @@ void          WindowChroma::Init() {
 
 void WindowChroma::Reload() {
     // Reload shader settings
-    static auto* const* bkgColor = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
-    const CColor        bkg      = CColor(**bkgColor);
+    static auto* const* bkgColor   = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
+    static auto* const* similarity = (Hyprlang::FLOAT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:similarity")->getDataStaticPtr();
+    const CColor        bkg        = CColor(**bkgColor);
 
-    glUseProgram(m_Shaders.RGBA.program);
-    glUniform3f(m_Shaders.BKGA, bkg.r, bkg.g, bkg.b);
-    glUseProgram(m_Shaders.EXT.program);
-    glUniform3f(m_Shaders.BKGE, bkg.r, bkg.g, bkg.b);
+    glUseProgram(m_Shaders.RGBA.cshader.program);
+    glUniform3f(m_Shaders.RGBA.bkg, bkg.r, bkg.g, bkg.b);
+    glUniform1f(m_Shaders.RGBA.similarity, **similarity);
+    glUseProgram(m_Shaders.EXT.cshader.program);
+    glUniform3f(m_Shaders.EXT.bkg, bkg.r, bkg.g, bkg.b);
+    glUniform1f(m_Shaders.EXT.similarity, **similarity);
 
     m_ChromaWindows = {};
     for (const auto& window : g_pCompositor->m_vWindows)
@@ -24,8 +28,8 @@ void WindowChroma::Reload() {
 
 void WindowChroma::Unload() {
     if (m_ShadersSwapped) {
-        std::swap(m_Shaders.EXT, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
-        std::swap(m_Shaders.RGBA, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
+        std::swap(m_Shaders.EXT.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
+        std::swap(m_Shaders.RGBA.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
         m_ShadersSwapped = false;
     }
 
@@ -72,16 +76,16 @@ void WindowChroma::OnRenderWindowPre() {
         (std::find(m_ManuallyChromaWindows.begin(), m_ManuallyChromaWindows.end(), g_pHyprOpenGL->m_pCurrentWindow.lock()) != m_ManuallyChromaWindows.end());
 
     if (shouldInvert) {
-        std::swap(m_Shaders.RGBA, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
-        std::swap(m_Shaders.EXT, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
+        std::swap(m_Shaders.RGBA.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
+        std::swap(m_Shaders.EXT.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
         m_ShadersSwapped = true;
     }
 }
 
 void WindowChroma::OnRenderWindowPost() {
     if (m_ShadersSwapped) {
-        std::swap(m_Shaders.RGBA, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
-        std::swap(m_Shaders.EXT, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
+        std::swap(m_Shaders.RGBA.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shRGBA);
+        std::swap(m_Shaders.EXT.cshader, g_pHyprOpenGL->m_RenderData.pCurrentMonData->m_shEXT);
         m_ShadersSwapped = false;
     }
 }

@@ -28,6 +28,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
     }
 
     HyprlandAPI::addConfigValue(PHANDLE, "plugin:chroma:color", Hyprlang::INT(0x000000));
+    HyprlandAPI::addConfigValue(PHANDLE, "plugin:chroma:similarity", Hyprlang::FLOAT(0.1f));
     HyprlandAPI::addDispatcher(PHANDLE, "togglewindowchromakey", [&](std::string args) {
         std::lock_guard<std::mutex> lock(g_ChromaMutex);
         g_WindowChroma.ToggleChroma(g_pCompositor->getWindowByRegex(args));
