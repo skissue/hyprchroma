@@ -7,13 +7,9 @@
 
 inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) -> std::string {
     return std::format(R"glsl(
-	// Original shader by ikz87
-
-	float target_opacity = 0.83;
-
 	if ({0}.a == 1.0 && all(lessThan(abs({0}.rgb - bkg), vec3(similarity))))
 	{{
-        {0}.a = target_opacity;
+        {0}.a = chromaAlpha;
 	}}
     )glsl",
                        colorVarName);
@@ -37,6 +33,7 @@ uniform int applyTint;
 uniform vec3 tint;
 
 uniform vec3 bkg;
+uniform float chromaAlpha;
 uniform float similarity;
 
 void main() {
@@ -86,6 +83,7 @@ uniform int applyTint;
 uniform vec3 tint;
 
 uniform vec3 bkg;
+uniform float chromaAlpha;
 uniform float similarity;
 
 void main() {

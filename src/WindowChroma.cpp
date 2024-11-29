@@ -10,15 +10,18 @@ void          WindowChroma::Init() {
 
 void WindowChroma::Reload() {
     // Reload shader settings
-    static auto* const* bkgColor   = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
-    static auto* const* similarity = (Hyprlang::FLOAT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:similarity")->getDataStaticPtr();
-    const CColor        bkg        = CColor(**bkgColor);
+    static auto* const* bkgColor    = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:color")->getDataStaticPtr();
+    static auto* const* chromaAlpha = (Hyprlang::FLOAT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:alpha")->getDataStaticPtr();
+    static auto* const* similarity  = (Hyprlang::FLOAT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:chroma:similarity")->getDataStaticPtr();
+    const CColor        bkg         = CColor(**bkgColor);
 
     glUseProgram(m_Shaders.RGBA.cshader.program);
     glUniform3f(m_Shaders.RGBA.bkg, bkg.r, bkg.g, bkg.b);
+    glUniform1f(m_Shaders.RGBA.chromaAlpha, **chromaAlpha);
     glUniform1f(m_Shaders.RGBA.similarity, **similarity);
     glUseProgram(m_Shaders.EXT.cshader.program);
     glUniform3f(m_Shaders.EXT.bkg, bkg.r, bkg.g, bkg.b);
+    glUniform1f(m_Shaders.EXT.chromaAlpha, **chromaAlpha);
     glUniform1f(m_Shaders.EXT.similarity, **similarity);
 
     m_ChromaWindows = {};

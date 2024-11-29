@@ -25,6 +25,7 @@ void ShaderHolder::Init() {
     RGBA.cshader.applyTint         = glGetUniformLocation(prog, "applyTint");
     RGBA.cshader.tint              = glGetUniformLocation(prog, "tint");
     RGBA.bkg                       = glGetUniformLocation(prog, "bkg");
+    RGBA.chromaAlpha               = glGetUniformLocation(prog, "chromaAlpha");
     RGBA.similarity                = glGetUniformLocation(prog, "similarity");
 
     prog                          = CreateProgram(TEXVERTSRC, TEXFRAGSRCEXT_CHROMA);
@@ -43,6 +44,7 @@ void ShaderHolder::Init() {
     EXT.cshader.applyTint         = glGetUniformLocation(prog, "applyTint");
     EXT.cshader.tint              = glGetUniformLocation(prog, "tint");
     EXT.bkg                       = glGetUniformLocation(prog, "bkg");
+    EXT.chromaAlpha               = glGetUniformLocation(prog, "chromaAlpha");
     EXT.similarity                = glGetUniformLocation(prog, "similarity");
 
     g_pHyprRenderer->unsetEGL();

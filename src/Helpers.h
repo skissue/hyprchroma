@@ -23,6 +23,7 @@ struct ChromaShader {
     CShader cshader;
     // Custom shader uniform field locations
     GLint bkg;
+    GLint chromaAlpha;
     GLint similarity;
 };
 
