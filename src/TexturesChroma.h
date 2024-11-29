@@ -9,21 +9,14 @@ inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) ->
     return std::format(R"glsl(
 	// Original shader by ikz87
 
-	float amount = 1.4; // How much similar colors should be changed.
 	float target_opacity = 0.83;
-	// Change any of the above values to get the result you want
 
-	if ({0}.x >=bkg.x - similarity && {0}.x <=bkg.x + similarity &&
-            {0}.y >=bkg.y - similarity && {0}.y <=bkg.y + similarity &&
-            {0}.z >=bkg.z - similarity && {0}.z <=bkg.z + similarity &&
-            {0}.w >= 0.99)
+	if ({0}.a == 1.0 &&
+        {0}.r >= bkg.r - similarity && {0}.r <= bkg.r + similarity &&
+        {0}.g >= bkg.g - similarity && {0}.g <= bkg.g + similarity &&
+        {0}.b >= bkg.b - similarity && {0}.b <= bkg.b + similarity)
 	{{
-	    // Calculate error between matched pixel and color_rgb values
-            vec3 error = vec3(abs(bkg.x - {0}.x), abs(bkg.y - {0}.y), abs(bkg.z - {0}.z));
-	    float avg_error = (error.x + error.y + error.z) / 3.0;
-            {0}.w = target_opacity + (1.0 - target_opacity)*avg_error*amount/similarity;
-
-	    // {0}.rgba = vec4(0, 0, 1, 0.5);
+        {0}.a = target_opacity;
 	}}
     )glsl",
                        colorVarName);
