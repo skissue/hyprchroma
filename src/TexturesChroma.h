@@ -11,10 +11,7 @@ inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) ->
 
 	float target_opacity = 0.83;
 
-	if ({0}.a == 1.0 &&
-        {0}.r >= bkg.r - similarity && {0}.r <= bkg.r + similarity &&
-        {0}.g >= bkg.g - similarity && {0}.g <= bkg.g + similarity &&
-        {0}.b >= bkg.b - similarity && {0}.b <= bkg.b + similarity)
+	if ({0}.a == 1.0 && all(lessThan(abs({0}.rgb - bkg), vec3(similarity))))
 	{{
         {0}.a = target_opacity;
 	}}
