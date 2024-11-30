@@ -7,7 +7,7 @@
 
 inline static constexpr auto CHROMA_FUNC = [](const std::string colorVarName) -> std::string {
     return std::format(R"glsl(
-	if ({0}.a == 1.0 && all(lessThan(abs({0}.rgb - bkg), vec3(similarity))))
+	if ({0}.a == 1.0 && all(lessThanEqual(abs({0}.rgb - bkg), vec3(similarity))))
 	{{
         {0}.a = chromaAlpha;
 	}}
